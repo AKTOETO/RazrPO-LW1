@@ -1,5 +1,7 @@
 #include <iostream>
 
+// Новая информация от person2
+
 int main(int argc, char* argv[]) {
     double sum = 0.0;
 
