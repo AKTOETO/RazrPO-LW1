@@ -1,14 +1,16 @@
 #include <iostream>
+#include "file.h"
 
 // Новая информация от person2
 
 int main(int argc, char* argv[]) {
     double sum = 0.0;
-
+    int sum_int = my_sum(2,3);
+    std::cout << "Сумма из файла file.h:" << sum_int << std::endl;
     // Проверяем, есть ли вообще аргументы для суммирования
     if (argc <= 1) {
-        std::cout << "Использование: " << argv[0] << " число1 число2 ..." << std::endl;
-        std::cout << "Пожалуйста, предоставьте числа в качестве аргументов командной строки." << std::endl;
+        std::cout << "person2 хочет рассказать про использование: " << argv[0] << " число1 число2 ..." << std::endl;
+        std::cout << "Так, person2 говорит: Пожалуйста, предоставьте числа в качестве аргументов командной строки." << std::endl;
         return 1;
     }
 
