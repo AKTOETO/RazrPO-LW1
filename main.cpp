@@ -1,9 +1,11 @@
 #include <iostream>
 #include "file.h"
+#include <pqxx/pqxx>
 
 // Новая информация от person2
 
 int main(int argc, char* argv[]) {
+    pqxx::connection C("dbname=postgres user=postgres password=2811 host=localhost port=5432");
     double sum = 0.0;
     int sum_int = my_sum(2,3);
     std::cout << "Сумма из файла file.h:" << sum_int << std::endl;
