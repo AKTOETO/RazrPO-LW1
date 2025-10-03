@@ -1,0 +1,71 @@
+name: C++ CI/CD Pipeline
+
+# Настройте CI таким образом, чтобы он автоматически запускался
+# при каждом новом коммите в ваш репозиторий.
+on:
+  push:
+    branches:
+      - main
+      - development
+      - release
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Шаг 1: Клонирование репозитория с подадулями (submodules: 'recursive')
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive' # Клонируем git submodule lib/pqxx
+        
+    # Шаг 2: Установка зависимостей (PostgreSQL Development Libraries)
+    # libpqxx требует наличия libpq-dev на Ubuntu
+    - name: Install PostgreSQL-client dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpq-dev
+
+    # Шаг 3: Настройка и Сборка с CMake
+    - name: Configure and Build
+      run: |
+        cmake -B build .
+        cmake --build build --config Release
+        
+    # Шаг 4: Запуск Тестов (см. шаг 2.1)
+    - name: Run Tests
+      # Используем ctest для запуска всех тестов, определенных в CMake
+      run: ctest --test-dir build --output-on-failure
+      
+  # Настройка автоматической генерации документации при каждом обновлении кода через CI/CD.
+  # Запускаем только при успешном слиянии в main (push: branches: [main])
+  documentation:
+    runs-on: ubuntu-latest
+    needs: [build_and_test]
+    # Генерируем документацию только после успешной сборки и тестирования, 
+    # и только для веток main/release
+    if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    # Шаг 5: Установка Doxygen
+    - name: Install Doxygen
+      run: sudo apt-get install -y doxygen
+
+    # Шаг 6: Генерация документации (см. шаг 2.2)
+    - name: Generate Doxygen Documentation
+      run: doxygen Doxyfile # Doxyfile будет добавлен на шаге 2.2
+      
+    # Шаг 7: Размещение документации (например, на ветке gh-pages)
+    # Предполагается, что вы настроите публикацию на gh-pages в настройках репозитория
+    - name: Deploy Documentation to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html # Путь, указанный в Doxyfile (см. шаг 2.2)
