@@ -1,23 +1,16 @@
 name: C++ CI/CD Pipeline
 
-# Настройте CI таким образом, чтобы он автоматически запускался
-# при каждом новом коммите в ваш репозиторий.
+# Условия запуска пайплайна
 on:
-  push:
-    branches:
-      - main
-      - development
-      - release
-  pull_request:
-    branches:
-      - main
+  push: {}  # Запускается при любом пуше
+  pull_request: {}  # Запускается при любом PR
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
 
     steps:
-    # Шаг 1: Клонирование репозитория с подадулями (submodules: 'recursive')
+    # Шаг 1: Клонирование репозитория с подмодулями (submodules: 'recursive')
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
@@ -36,7 +29,7 @@ jobs:
         cmake -B build .
         cmake --build build --config Release
         
-    # Шаг 4: Запуск Тестов (см. шаг 2.1)
+    # Шаг 4: Запуск Тестов
     - name: Run Tests
       # Используем ctest для запуска всех тестов, определенных в CMake
       run: ctest --test-dir build --output-on-failure
@@ -58,14 +51,14 @@ jobs:
     - name: Install Doxygen
       run: sudo apt-get install -y doxygen
 
-    # Шаг 6: Генерация документации (см. шаг 2.2)
+    # Шаг 6: Генерация документации
     - name: Generate Doxygen Documentation
-      run: doxygen Doxyfile # Doxyfile будет добавлен на шаге 2.2
+      run: doxygen Doxyfile
       
-    # Шаг 7: Размещение документации (например, на ветке gh-pages)
+    # Шаг 7: Размещение документации
     # Предполагается, что вы настроите публикацию на gh-pages в настройках репозитория
     - name: Deploy Documentation to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/html # Путь, указанный в Doxyfile (см. шаг 2.2)
+        publish_dir: ./docs/html # Путь, указанный в Doxyfile 
