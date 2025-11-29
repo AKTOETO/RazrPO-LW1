@@ -16,6 +16,8 @@ enable_testing()
 
 # Добавление исполняемого файла для теста
 add_executable(test_sum tests/test_sum.cpp ../file.cpp)
+add_executable(test_mult tests/test_mult.cpp ../file.cpp)
 
 # Регистрация теста, который будет запускаться командой ctest
 add_test(NAME TestMySum COMMAND test_sum)
+add_test(NAME TestMyMult COMMAND test_mult)
