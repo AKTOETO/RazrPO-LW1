@@ -13,5 +13,4 @@ int my_sum(int a, int b);
 /// @return произведение
 int my_mult(int a, int b);
 
-
 #endif // !FILE_H
