@@ -1,0 +1,57 @@
+# Doxyfile for Simple Sum Program
+PROJECT_NAME           = "Simple Sum Program"
+PROJECT_BRIEF          = "Простое приложение для суммирования чисел"
+
+# --- Настройки Ввода/Вывода ---
+OUTPUT_DIRECTORY       = docs
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+
+# INPUT - Директория для сканирования (текущая)
+INPUT                  = .
+RECURSIVE              = YES
+# Исключаем служебные папки
+EXCLUDE_PATTERNS       = build/* .github/* lib/* tests/* # Включаем все C/C++ файлы и README
+FILE_PATTERNS          = *.cpp *.h *.md
+
+# --- Настройки Содержимого (Чтобы включить информацию по всем файлам) ---
+# EXTRACT_ALL: Включает документацию для недокументированных членов (функций, классов и т.д.)
+# Установите YES, чтобы Doxygen просканировал все функции и переменные, даже без специальных комментариев.
+EXTRACT_ALL            = YES
+# EXTRACT_PRIVATE/EXTRACT_STATIC: Включает приватные члены и статические члены файлов
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+# EXTRACT_PACKAGE: Включает члены "пакетов" (актуально для Java, но полезно для полноты)
+EXTRACT_PACKAGE        = YES
+# HIDE_UNDOC_MEMBERS: НЕ скрывать недокументированные члены
+HIDE_UNDOC_MEMBERS     = NO
+# SHOW_NAMESPACES: Явно включать документацию пространств имен
+SHOW_NAMESPACES        = YES 
+# HIDE_SCOPE_NAMES: Показывать полные имена (например, `MyNamespace::MyClass`)
+HIDE_SCOPE_NAMES       = NO
+
+# --- Настройки Графов (Чтобы включал все графы) ---
+# Убедитесь, что у вас установлена утилита Graphviz (она нужна для построения графов)
+HAVE_DOT               = YES
+
+# Классовые диаграммы
+CLASS_DIAGRAMS         = YES
+# Включает графы наследования
+INCLUDE_EACH_DOC       = YES
+# Граф зависимостей между файлами (очень полезно!)
+FILE_PATH_WITH_NAME    = YES
+SOURCE_BROWSER         = YES
+# Граф вызовов: кто кого вызывает
+CALL_GRAPH             = YES
+# Граф вызывающих: кого вызывают из данного места
+CALLER_GRAPH           = YES
+# Граф зависимостей между классами
+COLLABORATION_GRAPH    = YES
+# Граф зависимостей файлов
+DOT_PATH               = 
+DOTFILE_DIRS           = 
+# Уровень детализации графов: 0 - быстро, 10 - очень подробно
+MAX_DOT_GRAPH_DEPTH    = 0
+# Включать/исключать связи в графах
+DOT_CLEANUP            = YES

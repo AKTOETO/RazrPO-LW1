@@ -10,26 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Шаг 1: Клонирование репозитория с подмодулями (submodules: 'recursive')
+    # Клонирование репозитория с подмодулями (submodules: 'recursive')
     - name: Checkout repository and submodules
       uses: actions/checkout@v4
       with:
         submodules: 'recursive' # Клонируем git submodule lib/pqxx
         
-    # Шаг 2: Установка зависимостей (PostgreSQL Development Libraries)
+    # Установка зависимостей (PostgreSQL Development Libraries)
     # libpqxx требует наличия libpq-dev на Ubuntu
     - name: Install PostgreSQL-client dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libpq-dev
 
-    # Шаг 3: Настройка и Сборка с CMake
+    # Настройка и Сборка с CMake
     - name: Configure and Build
       run: |
         cmake -B build .
         cmake --build build --config Release
         
-    # Шаг 4: Запуск Тестов
+    # Запуск Тестов
     - name: Run Tests
       # Используем ctest для запуска всех тестов, определенных в CMake
       run: ctest --test-dir build --output-on-failure
@@ -43,22 +43,36 @@ jobs:
     # и только для веток main/release
     if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
     
+      # Добавляем разрешения для записи в репозиторий
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    # Шаги генерации документации
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    # Шаг 5: Установка Doxygen
-    - name: Install Doxygen
-      run: sudo apt-get install -y doxygen
+    # Установка Doxygen и Graphviz (для графиков утилита)
+    - name: Install Doxygen and Graphviz
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y doxygen graphviz
 
-    # Шаг 6: Генерация документации
+    # Генерация документации
     - name: Generate Doxygen Documentation
       run: doxygen Doxyfile
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
       
-    # Шаг 7: Размещение документации
-    # Предполагается, что вы настроите публикацию на gh-pages в настройках репозитория
-    - name: Deploy Documentation to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/html # Путь, указанный в Doxyfile 
+        path: ./docs/html
+      
+    # Размещение документации
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
