@@ -1,3 +1,5 @@
+USE_MDFILE_AS_MAINPAGE = README.md
+
 # Doxyfile for Simple Sum Program
 PROJECT_NAME           = "Simple Sum Program"
 PROJECT_BRIEF          = "Простое приложение для суммирования чисел"
